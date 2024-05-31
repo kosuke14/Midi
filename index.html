@@ -92,10 +92,11 @@
 				<input type="file" accept="audio/midi" />
 			</div>
 			<div id="Results">
-				<textarea
+				<!--textarea
 					id="ResultsText"
 					placeholder="json output..."
-				></textarea>
+				></textarea-->
+				<a id="ResultsDL" download="mid.json" href="#" style="display: none;">Download a json output</a>
 			</div>
 			<tone-play-toggle disabled></tone-play-toggle>
 		</tone-content>
@@ -148,16 +149,22 @@
 				const reader = new FileReader();
 				reader.onload = function (e) {
 					const midi = new Midi(e.target.result);
-					document.querySelector(
+					/*document.querySelector(
 						"#ResultsText"
 					).value = JSON.stringify(midi, undefined, 2);
 					document
 						.querySelector("tone-play-toggle")
-						.removeAttribute("disabled");
+						.removeAttribute("disabled");*/
 					currentMidi = midi;
+					document.querySelector("#ResultsDL").style.display = "block";
+					document.querySelector("#ResultsDL").download = file.name + ".json";
 				};
 				reader.readAsArrayBuffer(file);
 			}
+
+			document.querySelector("#ResultsDL").addEventListener('click', (e) => e.target.href = URL.createObjectURL(new Blob([JSON.stringify(currentMidi, null, 2)], {
+				type: "text/plain"
+			})));
 
 			const synths = [];
 			document
